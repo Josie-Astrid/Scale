@@ -75,6 +75,17 @@ class TestScalePolygonAnnotation(unittest.TestCase):
             self.assertEqual(payload['with_labels'], True)
             self.assertEqual(payload['attachment_type'], 'image')
 
+    @patch('ScalePolygonAnnotation.requests.post')
+    def test_create_scale_task_timeout_error(self, mock_post):
+        """Test handling of timeout errors."""
+        import requests
+        
+        # Mock timeout exception
+        mock_post.side_effect = requests.exceptions.Timeout("Request timed out")
+
+        with self.assertRaises(requests.exceptions.Timeout):
+            create_scale_task(api_key='test_api_key')
+
 
 if __name__ == '__main__':
     unittest.main()
